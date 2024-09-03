@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Number Table</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+        }
+        .highest {
+            color: green;
+        }
+        .lowest {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<form th:action="@{/generate}" method="get">
+    <label for="num1">First number (rows):</label>
+    <input type="number" name="rows" id="num1" required>
+    <label for="num2">Second number (columns):</label>
+    <input type="number" name="columns" id="num2" required>
+    <button type="submit">Generate random numbers</button>
+</form>
+
+
+<div th:if="${randomNumbers}">
+    <h3>Generated Table</h3>
+    <table>
+        <tbody>
+        <tr th:each="rowIndex : ${#numbers.sequence(0, rows - 1)}">
+            <td th:each="colIndex : ${#numbers.sequence(0, columns - 1)}"
+                th:text="${randomNumbers[rowIndex * columns + colIndex]}">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div th:if="${randomNumbers}">
+    <form th:action="@{/sort}" method="post">
+        <input type="hidden" name="rows" th:value="${rows}">
+        <input type="hidden" name="columns" th:value="${columns}">
+        <input type="hidden" name="randomNumbers" th:value="${randomNumbers}">
+        <button type="submit">See the result</button>
+    </form>
+</div>
+
+<div th:if="${sortedNumbers}">
+    <h3>Generated Table</h3>
+    <table>
+        <tr th:each="rowIndex : ${#numbers.sequence(0, rows - 1)}">
+            <td th:each="colIndex : ${#numbers.sequence(0, columns - 1)}"
+                th:text="${randomNumbers[rowIndex * columns + colIndex]}"
+                th:class="${lowest5.contains(randomNumbers[rowIndex * columns + colIndex]) ? 'lowest' :
+               (highest5.contains(randomNumbers[rowIndex * columns + colIndex]) ? 'highest' : '')}">
+            </td>
+
+        </tr>
+    </table>
+
+</div>
+
+</body>
+</html>
